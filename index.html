@@ -1,0 +1,1099 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اختبار طبقة الأوزون والكيمياء</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+        
+        h1, h2, h3 {
+            color: #2e7d32;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .screen {
+            display: none;
+            padding: 20px;
+        }
+        
+        .active {
+            display: block;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        
+        button {
+            background-color: #2e7d32;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 5px;
+            transition: background-color 0.3s;
+        }
+        
+        button:hover {
+            background-color: #1b5e20;
+        }
+        
+        button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+        
+        .btn-secondary {
+            background-color: #757575;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #616161;
+        }
+        
+        .question {
+            margin-bottom: 20px;
+            padding: 15px;
+            border: 1px solid #e0e0e0;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        
+        .options {
+            margin-top: 15px;
+        }
+        
+        .option {
+            margin-bottom: 10px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .option:hover {
+            background-color: #e8f5e9;
+        }
+        
+        .option.selected {
+            background-color: #c8e6c9;
+            border-color: #2e7d32;
+        }
+        
+        .option.correct {
+            background-color: #c8e6c9;
+            border-color: #2e7d32;
+        }
+        
+        .option.incorrect {
+            background-color: #ffcdd2;
+            border-color: #c62828;
+        }
+        
+        .feedback {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 5px;
+            display: none;
+        }
+        
+        .feedback.correct {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+            border: 1px solid #c8e6c9;
+        }
+        
+        .feedback.incorrect {
+            background-color: #ffebee;
+            color: #c62828;
+            border: 1px solid #ffcdd2;
+        }
+        
+        .timer {
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            margin: 20px 0;
+            color: #2e7d32;
+        }
+        
+        .progress {
+            height: 10px;
+            background-color: #e0e0e0;
+            border-radius: 5px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background-color: #2e7d32;
+            width: 0%;
+            transition: width 0.3s;
+        }
+        
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+        
+        .results {
+            text-align: center;
+        }
+        
+        .score {
+            font-size: 24px;
+            font-weight: bold;
+            margin: 20px 0;
+            color: #2e7d32;
+        }
+        
+        .result-details {
+            text-align: right;
+            margin-top: 20px;
+        }
+        
+        .result-item {
+            padding: 10px;
+            border-bottom: 1px solid #e0e0e0;
+            margin-bottom: 15px;
+        }
+        
+        .result-item.correct {
+            background-color: #e8f5e9;
+        }
+        
+        .result-item.incorrect {
+            background-color: #ffebee;
+        }
+        
+        .question-number {
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #2e7d32;
+        }
+        
+        .header {
+            background-color: #2e7d32;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            border-radius: 10px 10px 0 0;
+        }
+        
+        .student-info {
+            background-color: #e8f5e9;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .correct-answer {
+            background-color: #e8f5e9;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+            border-right: 4px solid #2e7d32;
+        }
+        
+        .user-answer {
+            margin: 5px 0;
+        }
+        
+        .answer-status {
+            font-weight: bold;
+            margin: 5px 0;
+        }
+        
+        .correct-status {
+            color: #2e7d32;
+        }
+        
+        .incorrect-status {
+            color: #c62828;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- شاشة البداية -->
+        <div id="start-screen" class="screen active">
+            <div class="header">
+                <h1>اختبار طبقة الأوزون والكيمياء</h1>
+                <p>50 سؤالاً تفاعلياً</p>
+            </div>
+            
+            <div class="form-group">
+                <label for="student-name">اسم الطالب:</label>
+                <input type="text" id="student-name" placeholder="أدخل اسمك">
+            </div>
+            
+            <div class="form-group">
+                <label for="student-class">الشعبة:</label>
+                <select id="student-class">
+                    <option value="">اختر الشعبة</option>
+                    <option value="1">الشعبة 1</option>
+                    <option value="2">الشعبة 2</option>
+                    <option value="3">الشعبة 3</option>
+                    <option value="4">الشعبة 4</option>
+                    <option value="5">الشعبة 5</option>
+                    <option value="6">الشعبة 6</option>
+                    <option value="7">الشعبة 7</option>
+                </select>
+            </div>
+            
+            <button id="start-btn" class="btn-primary">ابدأ الاختبار</button>
+        </div>
+        
+        <!-- شاشة الأسئلة -->
+        <div id="quiz-screen" class="screen">
+            <div class="header">
+                <h2>اختبار طبقة الأوزون والكيمياء</h2>
+            </div>
+            
+            <div class="student-info">
+                <span id="display-name"></span> - الشعبة: <span id="display-class"></span>
+            </div>
+            
+            <div class="timer" id="timer">30:00</div>
+            
+            <div class="progress">
+                <div class="progress-bar" id="progress-bar"></div>
+            </div>
+            
+            <div class="question-number" id="question-number">السؤال 1 من 50</div>
+            
+            <div class="question" id="question-container">
+                <div id="question-text"></div>
+                <div class="options" id="options-container"></div>
+                <div class="feedback" id="feedback"></div>
+            </div>
+            
+            <div class="navigation">
+                <button id="prev-btn" class="btn-secondary">السابق</button>
+                <button id="next-btn" class="btn-primary">التالي</button>
+            </div>
+        </div>
+        
+        <!-- شاشة النتائج -->
+        <div id="results-screen" class="screen">
+            <div class="header">
+                <h2>نتيجة الاختبار</h2>
+            </div>
+            
+            <div class="student-info">
+                <span id="result-name"></span> - الشعبة: <span id="result-class"></span>
+            </div>
+            
+            <div class="results">
+                <div class="score" id="score">0/50</div>
+                <p id="result-message"></p>
+            </div>
+            
+            <div class="result-details" id="result-details"></div>
+            
+            <div style="text-align: center; margin-top: 20px;">
+                <button id="restart-btn" class="btn-primary">إعادة الاختبار</button>
+                <button id="show-answers-btn" class="btn-secondary">عرض الإجابات الصحيحة</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // الأسئلة
+        const questions = [
+            {
+                text: "ما الهدف الأساسي من اجتماع الزعماء في مونتريال؟",
+                options: [
+                    "توقيع معاهدات تجارية",
+                    "حماية طبقة الأوزون",
+                    "زيادة إنتاج الطاقة"
+                ],
+                correct: 1
+            },
+            {
+                text: "عُقد اجتماع مونتريال عام 1987 من أجل:",
+                options: [
+                    "تقليل انبعاثات ثاني أكسيد الكربون",
+                    "وضع بروتوكول لحماية الأوزون",
+                    "تطوير الطاقة الشمسية"
+                ],
+                correct: 1
+            },
+            {
+                text: "اتفاقية مونتريال اهتمت بشكل خاص بـ:",
+                options: [
+                    "حماية الغابات",
+                    "حماية طبقة الأوزون من التلوث",
+                    "حماية البحار"
+                ],
+                correct: 1
+            },
+            {
+                text: "من النتائج المباشرة لاجتماع مونتريال:",
+                options: [
+                    "حظر استخدام مركبات الكلوروفلوروكربون (CFCs)",
+                    "منع استخدام السيارات",
+                    "فرض ضرائب على الوقود"
+                ],
+                correct: 0
+            },
+            {
+                text: "ما العامل الرئيسي المؤثر في تكون ثقب الأوزون فوق القطب الجنوبي؟",
+                options: [
+                    "مركبات الكلوروفلوروكربون",
+                    "غاز الأكسجين فقط",
+                    "بخار الماء"
+                ],
+                correct: 0
+            },
+            {
+                text: "من المواد الكيميائية التي تساهم في تدمير الأوزون:",
+                options: [
+                    "النيتروجين",
+                    "الكلوروفلوروكربون",
+                    "ثاني أكسيد الكربون"
+                ],
+                correct: 1
+            },
+            {
+                text: "لماذا يظهر ثقب الأوزون بوضوح فوق القارة القطبية الجنوبية؟",
+                options: [
+                    "لأنها أكثر المناطق حرارة",
+                    "بسبب الظروف الجوية الباردة التي تُنشط التفاعلات الكيميائية",
+                    "لأنها قريبة من خط الاستواء"
+                ],
+                correct: 1
+            },
+            {
+                text: "من العوامل الطبيعية التي تساعد على اتساع ثقب الأوزون:",
+                options: [
+                    "شدة الرياح القطبية",
+                    "زيادة الغازات الدفيئة",
+                    "نشاط البراكين"
+                ],
+                correct: 0
+            },
+            {
+                text: "لماذا يتكون معظم الأوزون عند خط الاستواء؟",
+                options: [
+                    "بسبب قوة أشعة الشمس فوق البنفسجية",
+                    "بسبب وجود غابات مطيرة",
+                    "بسبب كثرة الأمطار"
+                ],
+                correct: 0
+            },
+            {
+                text: "تكوّن الأوزون يعتمد على:",
+                options: [
+                    "الضوء فوق البنفسجي",
+                    "الضوء المرئي",
+                    "ضوء الأشعة تحت الحمراء"
+                ],
+                correct: 0
+            },
+            {
+                text: "السبب الأساسي لوجود تركيز عالٍ من الأوزون فوق خط الاستواء هو:",
+                options: [
+                    "قلة الأشعة الشمسية",
+                    "وفرة الأشعة فوق البنفسجية",
+                    "انخفاض درجات الحرارة"
+                ],
+                correct: 1
+            },
+            {
+                text: "من الأجهزة المستخدمة لقياس طبقة الأوزون:",
+                options: [
+                    "الدوبلر رادار",
+                    "مطياف دوبسون",
+                    "البوصلة"
+                ],
+                correct: 1
+            },
+            {
+                text: "الجهاز الأكثر استخداماً في قياس الأوزون هو:",
+                options: [
+                    "مقياس الحرارة",
+                    "مطياف دوبسون",
+                    "البارومتر"
+                ],
+                correct: 1
+            },
+            {
+                text: "الأقمار الصناعية تقيس طبقة الأوزون باستخدام:",
+                options: [
+                    "أجهزة استشعار طيفية",
+                    "مقاييس ضغط جوي",
+                    "مقاييس حرارة"
+                ],
+                correct: 0
+            },
+            {
+                text: "من أدوات رصد الأوزون من الأرض:",
+                options: [
+                    "مطياف بروير",
+                    "الترمومتر",
+                    "الهيدرومتر"
+                ],
+                correct: 0
+            },
+            {
+                text: "ما العلم الذي يدرس المادة وتغيراتها؟",
+                options: [
+                    "علم الفيزياء",
+                    "علم الكيمياء",
+                    "علم الأحياء"
+                ],
+                correct: 1
+            },
+            {
+                text: "ما المجال الذي يهتم بدراسة تركيب المواد وخواصها وتفاعلاتها؟",
+                options: [
+                    "الرياضيات",
+                    "الكيمياء",
+                    "الفلك"
+                ],
+                correct: 1
+            },
+            {
+                text: "ما أحد فروع علم الكيمياء الذي يهتم بدراسة المركبات العضوية؟",
+                options: [
+                    "الكيمياء العضوية",
+                    "الكيمياء الفيزيائية",
+                    "الكيمياء النووية"
+                ],
+                correct: 0
+            },
+            {
+                text: "ما المقصود بالمادة الكيميائية؟",
+                options: [
+                    "مادة نقية لها تركيب ثابت",
+                    "خليط من مواد مختلفة",
+                    "أي جسم صلب"
+                ],
+                correct: 0
+            },
+            {
+                text: "ما مثال على مادة كيميائية نقية؟",
+                options: [
+                    "الهواء",
+                    "الماء النقي",
+                    "التربة"
+                ],
+                correct: 1
+            },
+            {
+                text: "ما الذي يميز المادة الكيميائية عن غيرها من المواد؟",
+                options: [
+                    "تركيبها ثابت",
+                    "لونها جميل",
+                    "طعمها لذيذ"
+                ],
+                correct: 0
+            },
+            {
+                text: "ما أبرز أضرار الأشعة فوق البنفسجية على الإنسان؟",
+                options: [
+                    "تقوية المناعة",
+                    "سرطان الجلد",
+                    "تحسين النظر"
+                ],
+                correct: 1
+            },
+            {
+                text: "ماذا يحدث للجسم عند التعرض الزائد للأشعة فوق البنفسجية؟",
+                options: [
+                    "حروق جلدية",
+                    "زيادة النشاط",
+                    "نمو أسرع للشعر"
+                ],
+                correct: 0
+            },
+            {
+                text: "كيف تؤثر الأشعة فوق البنفسجية على العين والجلد؟",
+                options: [
+                    "تسبب المياه البيضاء وحروق",
+                    "تحسين الرؤية",
+                    "زيادة النضارة"
+                ],
+                correct: 0
+            },
+            {
+                text: "كيف يتكوّن غاز الأوزون في الغلاف الجوي؟",
+                options: [
+                    "من تبخر الماء",
+                    "بتأثير الأشعة فوق البنفسجية على الأكسجين",
+                    "من احتراق الوقود"
+                ],
+                correct: 1
+            },
+            {
+                text: "ما أهمية طبقة الأوزون في حماية الكائنات الحية؟",
+                options: [
+                    "تمتص الأشعة فوق البنفسجية",
+                    "تزيد حرارة الأرض",
+                    "تساعد على المطر"
+                ],
+                correct: 0
+            },
+            {
+                text: "أين توجد طبقة الأوزون في الغلاف الجوي؟",
+                options: [
+                    "في طبقة التروبوسفير",
+                    "في طبقة الستراتوسفير",
+                    "في طبقة الميزوسفير"
+                ],
+                correct: 1
+            },
+            {
+                text: "ما الوحدة التي تُستخدم لقياس كمية الأوزون في الغلاف الجوي؟",
+                options: [
+                    "باسكال",
+                    "دوبسون",
+                    "جول"
+                ],
+                correct: 1
+            },
+            {
+                text: "ما الجهاز الذي يستخدمه العلماء لقياس سمك طبقة الأوزون؟",
+                options: [
+                    "مطياف دوبسون",
+                    "البارومتر",
+                    "الترمومتر"
+                ],
+                correct: 0
+            },
+            {
+                text: "ماذا يدل ارتفاع قراءة مقياس دوبسون؟",
+                options: [
+                    "زيادة سمك الأوزون",
+                    "قلة الأوزون",
+                    "ثبات الأوزون"
+                ],
+                correct: 0
+            },
+            {
+                text: "ما السبب الرئيس لتقلص طبقة الأوزون؟",
+                options: [
+                    "الغازات الدفيئة",
+                    "استخدام مركبات الكلوروفلوروكربون",
+                    "زيادة الأشجار"
+                ],
+                correct: 1
+            },
+            {
+                text: "كيف يؤدي غاز الكلور إلى تدمير الأوزون؟",
+                options: [
+                    "يتفاعل مع الأوزون ويفككه",
+                    "يزيد من تكوين الأوزون",
+                    "يحافظ على الأوزون"
+                ],
+                correct: 0
+            },
+            {
+                text: "ما أثر تآكل طبقة الأوزون على الإنسان والبيئة؟",
+                options: [
+                    "زيادة الأمراض",
+                    "تقليل التلوث",
+                    "تحسين الزراعة"
+                ],
+                correct: 0
+            },
+            {
+                text: "في ماذا تُستخدم مركبات الكلوروفلوروكربون؟",
+                options: [
+                    "في التبريد والرش",
+                    "في الزراعة فقط",
+                    "في صناعة الأدوية"
+                ],
+                correct: 0
+            },
+            {
+                text: "ما الخصائص التي جعلت مركبات الكلوروفلوروكربون مناسبة للتبريد؟",
+                options: [
+                    "مستقرة وغير سامة",
+                    "لذيذة الطعم",
+                    "ملونة"
+                ],
+                correct: 0
+            },
+            {
+                text: "لماذا كانت مركبات الكلوروفلوروكربون تُستخدم بكثرة في الماضي؟",
+                options: [
+                    "لأنها رخيصة وسهلة التصنيع",
+                    "لأنها خطيرة",
+                    "لأنها ملوثة من البداية"
+                ],
+                correct: 0
+            },
+            {
+                text: "ما العلاقة بين الأوزون والأشعة فوق البنفسجية؟",
+                options: [
+                    "الأوزون يمتص الأشعة فوق البنفسجية",
+                    "الأوزون يطلق الأشعة",
+                    "الأوزون يعكس الضوء"
+                ],
+                correct: 0
+            },
+            {
+                text: "ما النتائج المترتبة على تآكل طبقة الأوزون؟",
+                options: [
+                    "زيادة سرطان الجلد",
+                    "تقليل درجات الحرارة",
+                    "زيادة الأمطار"
+                ],
+                correct: 0
+            },
+            {
+                text: "كيف يؤدي استخدام مركبات الكلوروفلوروكربون إلى زيادة ثقب الأوزون؟",
+                options: [
+                    "لأنها تطلق غاز الكلور",
+                    "لأنها تزيد الأكسجين",
+                    "لأنها تمتص الشمس"
+                ],
+                correct: 0
+            },
+            {
+                text: "ما الحلول المقترحة لحماية طبقة الأوزون؟",
+                options: [
+                    "تقليل استخدام CFCs",
+                    "زيادة الوقود",
+                    "تدمير الغابات"
+                ],
+                correct: 0
+            },
+            {
+                text: "لماذا يوجد عدة فروع لعلم الكيمياء؟",
+                options: [
+                    "لأن الكيمياء تهتم فقط بالمركبات العضوية",
+                    "لأن دراسة المادة معقدة ولها جوانب متعددة",
+                    "لأن الكيمياء علم بسيط"
+                ],
+                correct: 1
+            },
+            {
+                text: "ما السبب في تقسيم الكيمياء إلى فروع مختلفة؟",
+                options: [
+                    "لتسهيل دراسة المجالات المختلفة",
+                    "لأنها مادة غير مهمة",
+                    "لأنها تركز فقط على الذرات"
+                ],
+                correct: 0
+            },
+            {
+                text: "من فروع الكيمياء:",
+                options: [
+                    "الكيمياء العضوية",
+                    "علم الأحياء",
+                    "علم الفلك"
+                ],
+                correct: 0
+            },
+            {
+                text: "ما الفرق بين الكتلة والوزن؟",
+                options: [
+                    "الكتلة تتغير حسب المكان، الوزن ثابت",
+                    "الكتلة ثابتة والوزن يتغير حسب الجاذبية",
+                    "لا فرق بينهما"
+                ],
+                correct: 1
+            },
+            {
+                text: "الكتلة تقاس بـ:",
+                options: [
+                    "النيوتن",
+                    "الكيلوغرام",
+                    "الجول"
+                ],
+                correct: 1
+            },
+            {
+                text: "الوزن يقاس بـ:",
+                options: [
+                    "الكيلوغرام",
+                    "النيوتن",
+                    "المتر"
+                ],
+                correct: 1
+            },
+            {
+                text: "لماذا يهتم الكيميائيون بالوصف تحت المجهري للمادة؟",
+                options: [
+                    "لفهم التفاعلات على مستوى الذرات والجزيئات",
+                    "لمعرفة الألوان فقط",
+                    "لمعرفة الكتلة فقط"
+                ],
+                correct: 0
+            },
+            {
+                text: "ما الذي يساعد العلماء على دراسة المادة تحت المستوى المجهري؟",
+                options: [
+                    "العين المجردة",
+                    "الأجهزة والمجاهر",
+                    "السمع"
+                ],
+                correct: 1
+            },
+            {
+                text: "يهتم الكيميائيون بالوصف المجهري للمادة لأنه:",
+                options: [
+                    "يكشف سلوك الجزيئات",
+                    "أسهل من الوصف الكلي",
+                    "غير مهم للعلم"
+                ],
+                correct: 0
+            }
+        ];
+
+        // المتغيرات العامة
+        let currentQuestion = 0;
+        let userAnswers = new Array(questions.length).fill(null);
+        let score = 0;
+        let timer;
+        let timeLeft = 30 * 60; // 30 دقيقة بالثواني
+        let audioContext;
+        let oscillator;
+        let showAnswers = false;
+
+        // تهيئة السياق الصوتي
+        function initAudio() {
+            try {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            } catch (e) {
+                console.log("Web Audio API غير مدعوم في هذا المتصفح");
+            }
+        }
+
+        // تشغيل صوت النجاح
+        function playSuccessSound() {
+            if (!audioContext) return;
+            
+            oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            oscillator.frequency.setValueAtTime(523.25, audioContext.currentTime); // C5
+            oscillator.frequency.setValueAtTime(659.25, audioContext.currentTime + 0.1); // E5
+            oscillator.frequency.setValueAtTime(783.99, audioContext.currentTime + 0.2); // G5
+            
+            gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+            
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + 0.3);
+        }
+
+        // تهيئة التطبيق
+        function initApp() {
+            // عناصر DOM
+            const startScreen = document.getElementById('start-screen');
+            const quizScreen = document.getElementById('quiz-screen');
+            const resultsScreen = document.getElementById('results-screen');
+            const startBtn = document.getElementById('start-btn');
+            const prevBtn = document.getElementById('prev-btn');
+            const nextBtn = document.getElementById('next-btn');
+            const restartBtn = document.getElementById('restart-btn');
+            const showAnswersBtn = document.getElementById('show-answers-btn');
+            const studentNameInput = document.getElementById('student-name');
+            const studentClassSelect = document.getElementById('student-class');
+            const displayName = document.getElementById('display-name');
+            const displayClass = document.getElementById('display-class');
+            const resultName = document.getElementById('result-name');
+            const resultClass = document.getElementById('result-class');
+            const questionText = document.getElementById('question-text');
+            const optionsContainer = document.getElementById('options-container');
+            const feedback = document.getElementById('feedback');
+            const questionNumber = document.getElementById('question-number');
+            const progressBar = document.getElementById('progress-bar');
+            const timerDisplay = document.getElementById('timer');
+            const scoreDisplay = document.getElementById('score');
+            const resultMessage = document.getElementById('result-message');
+            const resultDetails = document.getElementById('result-details');
+
+            // بدء الاختبار
+            startBtn.addEventListener('click', function() {
+                const name = studentNameInput.value.trim();
+                const studentClass = studentClassSelect.value;
+                
+                if (!name) {
+                    alert('يرجى إدخال اسم الطالب');
+                    return;
+                }
+                
+                if (!studentClass) {
+                    alert('يرجى اختيار الشعبة');
+                    return;
+                }
+                
+                displayName.textContent = name;
+                displayClass.textContent = studentClass;
+                resultName.textContent = name;
+                resultClass.textContent = studentClass;
+                
+                startScreen.classList.remove('active');
+                quizScreen.classList.add('active');
+                
+                initAudio();
+                startTimer();
+                showQuestion();
+            });
+
+            // عرض السؤال الحالي
+            function showQuestion() {
+                const question = questions[currentQuestion];
+                questionText.textContent = question.text;
+                optionsContainer.innerHTML = '';
+                
+                question.options.forEach((option, index) => {
+                    const optionElement = document.createElement('div');
+                    optionElement.className = 'option';
+                    if (userAnswers[currentQuestion] === index) {
+                        optionElement.classList.add('selected');
+                    }
+                    optionElement.textContent = option;
+                    optionElement.dataset.index = index;
+                    optionElement.addEventListener('click', selectOption);
+                    optionsContainer.appendChild(optionElement);
+                });
+                
+                questionNumber.textContent = `السؤال ${currentQuestion + 1} من ${questions.length}`;
+                progressBar.style.width = `${((currentQuestion + 1) / questions.length) * 100}%`;
+                
+                // إظهار/إخفاء أزرار التنقل
+                prevBtn.disabled = currentQuestion === 0;
+                nextBtn.disabled = userAnswers[currentQuestion] === null;
+                
+                // إخفاء التغذية الراجعة (لن نعرض الإجابة الصحيحة أثناء الاختبار)
+                feedback.style.display = 'none';
+                feedback.className = 'feedback';
+            }
+
+            // اختيار إجابة
+            function selectOption(e) {
+                const selectedOption = e.currentTarget;
+                const selectedIndex = parseInt(selectedOption.dataset.index);
+                
+                // إزالة التحديد من جميع الخيارات
+                document.querySelectorAll('.option').forEach(option => {
+                    option.classList.remove('selected');
+                });
+                
+                // تحديد الخيار المختار
+                selectedOption.classList.add('selected');
+                userAnswers[currentQuestion] = selectedIndex;
+                
+                // التحقق من الإجابة
+                const isCorrect = selectedIndex === questions[currentQuestion].correct;
+                
+                // عرض التغذية الراجعة (دون الإجابة الصحيحة)
+                feedback.textContent = isCorrect 
+                    ? 'إجابة صحيحة! أحسنت!' 
+                    : 'إجابة خاطئة! ستظهر الإجابة الصحيحة في نهاية الاختبار';
+                
+                feedback.className = isCorrect ? 'feedback correct' : 'feedback incorrect';
+                feedback.style.display = 'block';
+                
+                // تشغيل صوت النجاح إذا كانت الإجابة صحيحة
+                if (isCorrect) {
+                    playSuccessSound();
+                }
+                
+                // تمكين زر التالي
+                nextBtn.disabled = false;
+            }
+
+            // السؤال السابق
+            prevBtn.addEventListener('click', function() {
+                if (currentQuestion > 0) {
+                    currentQuestion--;
+                    showQuestion();
+                }
+            });
+
+            // السؤال التالي
+            nextBtn.addEventListener('click', function() {
+                if (currentQuestion < questions.length - 1) {
+                    currentQuestion++;
+                    showQuestion();
+                } else {
+                    // انتهاء الاختبار
+                    finishQuiz();
+                }
+            });
+
+            // بدء المؤقت
+            function startTimer() {
+                updateTimerDisplay();
+                
+                timer = setInterval(function() {
+                    timeLeft--;
+                    updateTimerDisplay();
+                    
+                    if (timeLeft <= 0) {
+                        clearInterval(timer);
+                        finishQuiz();
+                    }
+                }, 1000);
+            }
+
+            // تحديث عرض المؤقت
+            function updateTimerDisplay() {
+                const minutes = Math.floor(timeLeft / 60);
+                const seconds = timeLeft % 60;
+                timerDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                
+                // تغيير اللون عندما يقل الوقت عن 5 دقائق
+                if (timeLeft < 5 * 60) {
+                    timerDisplay.style.color = '#c62828';
+                }
+            }
+
+            // إنهاء الاختبار وعرض النتائج
+            function finishQuiz() {
+                clearInterval(timer);
+                
+                // حساب النتيجة
+                score = 0;
+                for (let i = 0; i < questions.length; i++) {
+                    if (userAnswers[i] === questions[i].correct) {
+                        score++;
+                    }
+                }
+                
+                // عرض النتيجة
+                scoreDisplay.textContent = `${score}/${questions.length}`;
+                
+                // عرض رسالة التقييم
+                const percentage = (score / questions.length) * 100;
+                let message = '';
+                
+                if (percentage >= 90) {
+                    message = 'ممتاز! أداء رائع!';
+                } else if (percentage >= 80) {
+                    message = 'جيد جداً! أحسنت!';
+                } else if (percentage >= 70) {
+                    message = 'جيد! يمكنك التحسين أكثر.';
+                } else if (percentage >= 60) {
+                    message = 'مقبول! تحتاج للمزيد من الدراسة.';
+                } else {
+                    message = 'ضعيف! يجب عليك مراجعة المادة.';
+                }
+                
+                resultMessage.textContent = message;
+                
+                // عرض تفاصيل النتائج
+                showResults(false);
+                
+                // الانتقال إلى شاشة النتائج
+                quizScreen.classList.remove('active');
+                resultsScreen.classList.add('active');
+            }
+
+            // عرض النتائج
+            function showResults(showAllAnswers) {
+                resultDetails.innerHTML = '';
+                for (let i = 0; i < questions.length; i++) {
+                    const resultItem = document.createElement('div');
+                    const isCorrect = userAnswers[i] === questions[i].correct;
+                    resultItem.className = isCorrect ? 'result-item correct' : 'result-item incorrect';
+                    
+                    const questionStatus = isCorrect ? '✓' : '✗';
+                    const userAnswerText = userAnswers[i] !== null ? questions[i].options[userAnswers[i]] : 'لم يتم الإجابة';
+                    const correctAnswerText = questions[i].options[questions[i].correct];
+                    
+                    let resultHTML = `
+                        <strong>السؤال ${i + 1}:</strong> ${questions[i].text}<br>
+                        <div class="user-answer"><strong>إجابتك:</strong> ${userAnswerText}</div>
+                        <div class="answer-status ${isCorrect ? 'correct-status' : 'incorrect-status'}">
+                            ${isCorrect ? 'إجابة صحيحة' : 'إجابة خاطئة'} ${questionStatus}
+                        </div>
+                    `;
+                    
+                    // عرض الإجابة الصحيحة فقط إذا طلب المستخدم أو إذا كانت الإجابة خاطئة
+                    if (showAllAnswers || !isCorrect) {
+                        resultHTML += `
+                            <div class="correct-answer"><strong>الإجابة الصحيحة:</strong> ${correctAnswerText}</div>
+                        `;
+                    }
+                    
+                    resultItem.innerHTML = resultHTML;
+                    resultDetails.appendChild(resultItem);
+                }
+            }
+
+            // إعادة الاختبار
+            restartBtn.addEventListener('click', function() {
+                // إعادة تعيين المتغيرات
+                currentQuestion = 0;
+                userAnswers = new Array(questions.length).fill(null);
+                score = 0;
+                timeLeft = 30 * 60;
+                showAnswers = false;
+                
+                // إعادة تعيين النماذج
+                studentNameInput.value = '';
+                studentClassSelect.value = '';
+                
+                // العودة إلى شاشة البداية
+                resultsScreen.classList.remove('active');
+                startScreen.classList.add('active');
+            });
+
+            // عرض الإجابات الصحيحة
+            showAnswersBtn.addEventListener('click', function() {
+                showAnswers = !showAnswers;
+                showResults(showAnswers);
+                showAnswersBtn.textContent = showAnswers ? 'إخفاء الإجابات الصحيحة' : 'عرض الإجابات الصحيحة';
+            });
+        }
+
+        // تهيئة التطبيق عند تحميل الصفحة
+        document.addEventListener('DOMContentLoaded', initApp);
+    </script>
+</body>
+</html>
